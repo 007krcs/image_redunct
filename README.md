@@ -135,4 +135,4 @@ Visit: [http://localhost:8501](http://localhost:8501) to use UI (upload & previe
 
 ## 📜 License
 
-MIT or proprietary (update accordingly)
+MIT
