@@ -129,7 +129,7 @@ Visit: [http://localhost:8501](http://localhost:8501) to use UI (upload & previe
 
 ## 🧑‍💻 Contributors
 
-* \[Your Name or Team]
+* Chandan Kumar / Seema Shaikh
 
 ---
 
