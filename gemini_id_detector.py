@@ -4,7 +4,7 @@ import re
 import os
 
 # Securely load your key
-GEMINI_API_KEY = "AIzaSyBRCzdZzYn7q7v8I2_Z1jNn1PYATrYeoFc"
+GEMINI_API_KEY = "Your Key"
 genai.configure(api_key=GEMINI_API_KEY)
 
 # ✅ Use accessible model
