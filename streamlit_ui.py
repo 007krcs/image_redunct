@@ -4,10 +4,14 @@ import os
 from PIL import Image
 from io import BytesIO
 
+os.environ["STREAMLIT_SERVER_HEADLESS"] = "true"
+os.environ["STREAMLIT_BROWSER_GATHER_USAGE_STATS"] = "false"
+
+
 st.title("🔒 ID Masking Document Redactor")
 st.markdown("Upload your PDF or image file. The system will mask sensitive IDs using Gemini AI.")
 
-BACKEND_URL = "http://localhost:8000"
+BACKEND_URL = "https://image-redunct.onrender.com"
 
 uploaded_file = st.file_uploader("Choose a PDF or Image", type=["pdf", "jpg", "jpeg", "png"])
 
