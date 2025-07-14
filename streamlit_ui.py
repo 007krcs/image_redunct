@@ -4,7 +4,7 @@ import os
 from PIL import Image
 from io import BytesIO
 
-# Required for Render compatibility
+# Render compatibility
 os.environ["STREAMLIT_SERVER_HEADLESS"] = "true"
 os.environ["STREAMLIT_BROWSER_GATHER_USAGE_STATS"] = "false"
 
@@ -12,13 +12,14 @@ st.set_page_config(page_title="ID Masking Redactor", layout="centered")
 st.title("🔒 ID Masking Document Redactor")
 st.markdown("Upload your PDF or image file. The system will mask sensitive IDs using Gemini AI.")
 
-# Use deployed backend URL
-
-BACKEND_URL = "http://localhost:8000"
+# ✅ Correct backend URL for Render deployment
+BACKEND_URL = "https://image-redunct.onrender.com"
 
 uploaded_file = st.file_uploader("Choose a PDF or Image", type=["pdf", "jpg", "jpeg", "png"])
 
 if uploaded_file:
+    st.write("📝 Uploaded file:", uploaded_file.name)
+
     with st.spinner("Uploading and processing..."):
         files = {"file": (uploaded_file.name, uploaded_file, uploaded_file.type)}
         try:
@@ -42,4 +43,7 @@ if uploaded_file:
 
         st.markdown(f"[📥 Download Masked Document]({download_url})")
     else:
-        st.error("Something went wrong. Backend response not 200.")
+        try:
+            st.error(f"❌ Backend error: {response.json().get('detail', 'No message')}")
+        except:
+            st.error("❌ Unknown error from backend.")
