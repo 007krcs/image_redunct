@@ -1,10 +1,12 @@
-# Use official Python 3.13 base image
 FROM python:3.13-slim
 
-# Install system dependencies needed for OCR, SciPy, and image processing
+# Install system dependencies required for OCR, PDF, and SciPy
 RUN apt-get update && apt-get install -y \
     gfortran \
     build-essential \
+    cmake \
+    pkg-config \
+    libopenblas-dev \
     tesseract-ocr \
     poppler-utils \
     libgl1 \
@@ -14,16 +16,16 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy all project files into the container
+# Copy all files to the container
 COPY . .
 
-# Upgrade pip and install all Python dependencies
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+# Install Python dependencies
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
-# Expose both ports: 8000 (FastAPI) and 10000 (Streamlit)
+# Expose ports
 EXPOSE 8000
 EXPOSE 10000
 
-# Run both FastAPI and Streamlit together
+# Start both FastAPI and Streamlit
 CMD ["bash", "-c", "uvicorn api_app:app --host 0.0.0.0 --port 8000 & streamlit run streamlit_ui.py --server.port 10000 --server.address 0.0.0.0"]
