@@ -51,7 +51,7 @@ orjson==3.10.18
 packaging==23.2
 pandas==2.3.0
 pdf2image==1.17.0
-pillow==11.3.0
+pillow==9.5.0
 proto-plus==1.26.1
 protobuf==5.29.5
 pyarrow==20.0.0
@@ -78,7 +78,7 @@ rich==14.0.0
 rich-toolkit==0.14.8
 rpds-py==0.26.0
 rsa==4.9.1
-scikit-image==0.25.2
+scikit-image==0.19.3
 scipy==1.11.4
 setuptools==80.9.0
 shapely==2.1.1
