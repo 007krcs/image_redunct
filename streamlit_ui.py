@@ -1,32 +1,20 @@
 import streamlit as st
 import requests
-import os
 from PIL import Image
 from io import BytesIO
 
-# Render compatibility
-os.environ["STREAMLIT_SERVER_HEADLESS"] = "true"
-os.environ["STREAMLIT_BROWSER_GATHER_USAGE_STATS"] = "false"
-
 st.set_page_config(page_title="ID Masking Redactor", layout="centered")
 st.title("🔒 ID Masking Document Redactor")
-st.markdown("Upload your PDF or image file. The system will mask sensitive IDs using Gemini AI.")
+st.markdown("Upload your PDF or image file. The system will mask sensitive IDs using LLM logic.")
 
-# ✅ Correct backend URL for Render deployment
-BACKEND_URL = "https://image-redunct.onrender.com"
+BACKEND_URL = "http://localhost:8000"
 
 uploaded_file = st.file_uploader("Choose a PDF or Image", type=["pdf", "jpg", "jpeg", "png"])
 
 if uploaded_file:
-    st.write("📝 Uploaded file:", uploaded_file.name)
-
     with st.spinner("Uploading and processing..."):
         files = {"file": (uploaded_file.name, uploaded_file, uploaded_file.type)}
-        try:
-            response = requests.post(f"{BACKEND_URL}/upload/", files=files)
-        except Exception as e:
-            st.error(f"❌ Could not reach backend: {e}")
-            st.stop()
+        response = requests.post(f"{BACKEND_URL}/upload/", files=files)
 
     if response.status_code == 200:
         download_info = response.json()
@@ -34,16 +22,10 @@ if uploaded_file:
         st.success("✅ Document processed and masked!")
 
         if uploaded_file.name.lower().endswith(("jpg", "jpeg", "png")):
-            try:
-                result_image = requests.get(download_url)
-                if result_image.ok:
-                    st.image(Image.open(BytesIO(result_image.content)), caption="🔍 Masked Preview", use_column_width=True)
-            except:
-                st.warning("Unable to preview image.")
+            result_image = requests.get(download_url)
+            if result_image.ok:
+                st.image(Image.open(BytesIO(result_image.content)), caption="🔍 Masked Preview", use_column_width=True)
 
         st.markdown(f"[📥 Download Masked Document]({download_url})")
     else:
-        try:
-            st.error(f"❌ Backend error: {response.json().get('detail', 'No message')}")
-        except:
-            st.error("❌ Unknown error from backend.")
+        st.error("❌ Something went wrong. Please try again.")

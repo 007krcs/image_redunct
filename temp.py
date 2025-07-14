@@ -3,25 +3,23 @@ import google.generativeai as genai
 import re
 import os
 
-# Securely load your key
-GEMINI_API_KEY = "AIzaSyAhcrMQoA37PXOonw3E1k5c0lfHWi6clwI"
+# Get API Key securely
+GEMINI_API_KEY = "AIzaSyAoqDMOEPH0I-Mre2h9xIAmTxs4bnmE5ug"
 genai.configure(api_key=GEMINI_API_KEY)
 
-# ✅ Use accessible model
-model = genai.GenerativeModel("models/gemini-1.5-pro")
+# ✅ Use correct model (Gemini Pro v1)
+model = genai.GenerativeModel("gemini-pro")
 
 PROMPT_TEMPLATE = """
-You are an expert in identifying personal ID information from OCR-extracted text.
-Extract only valid ID numbers from global identity documents such as Aadhaar, PAN, Passport, French National ID, Korean Passport, etc.
-Also include Document Numbers, Birth Dates, Reference Numbers if they seem like identifiers.
-
-Return ONLY in this JSON format:
+You are an expert in ID redaction.
+From the following OCR-extracted text, extract only valid ID numbers like Aadhaar, PAN, Passport, or Voter ID.
+Respond strictly in this format:
 [
-  {"type": "Document No", "value": "X4RTBPFW4"},
-  {"type": "Date of Birth", "value": "13 07 1990"}
+  {"type": "Aadhaar", "value": "1234 5678 9012"},
+  {"type": "PAN", "value": "ABCDE1234F"}
 ]
 
-OCR Text:
+Text:
 """
 
 def detect_ids_with_gemini(ocr_text):

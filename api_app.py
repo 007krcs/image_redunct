@@ -1,10 +1,9 @@
 from fastapi import FastAPI, UploadFile, File
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import shutil, os
 import uuid
-import subprocess
-import glob
+from main import process_document
 
 app = FastAPI()
 
@@ -17,34 +16,29 @@ app.add_middleware(
 )
 
 UPLOAD_DIR = "uploads"
+OUTPUT_DIR = "output"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 @app.post("/upload/")
-def upload_file(file: UploadFile = File(...)):
-    filename = f"{uuid.uuid4()}_{file.filename}"
-    file_path = os.path.join(UPLOAD_DIR, filename)
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+async def upload(file: UploadFile = File(...)):
+    file_id = str(uuid.uuid4())
+    ext = file.filename.split('.')[-1]
+    input_path = os.path.join(UPLOAD_DIR, f"{file_id}.{ext}")
 
-    # Run masking tool
-    subprocess.run(["python", "main.py", file_path])
+    with open(input_path, "wb") as f:
+        shutil.copyfileobj(file.file, f)
 
-    # Detect output file
-    if filename.lower().endswith(".pdf"):
-        output_file = os.path.join("output", "masked_output.pdf")
-    else:
-        base_name = os.path.basename(file_path).split("_", 1)[-1]  # strip UUID
-        matches = glob.glob(f"output/*{base_name}")
-        output_file = matches[0] if matches else None
+    output_path = process_document(input_path)
 
-    if output_file and os.path.exists(output_file):
-        return {"message": "File processed", "download_url": f"/download/{os.path.basename(output_file)}"}
-    else:
-        return {"message": "Masking failed. File not found."}
+    if output_path and os.path.exists(output_path):
+        filename = os.path.basename(output_path)
+        return {"download_url": f"/download/{filename}"}
+    return JSONResponse(status_code=500, content={"error": "Masking failed"})
 
 @app.get("/download/{filename}")
 def download_file(filename: str):
-    filepath = os.path.join("output", filename)
+    filepath = os.path.join(OUTPUT_DIR, filename)
     if os.path.exists(filepath):
         return FileResponse(filepath, media_type="application/octet-stream", filename=filename)
-    raise RuntimeError(f"File at path {filepath} does not exist.")
+    return JSONResponse(status_code=404, content={"error": "File not found"})
