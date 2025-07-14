@@ -7,7 +7,7 @@ st.set_page_config(page_title="ID Masking Redactor", layout="centered")
 st.title("🔒 ID Masking Document Redactor")
 st.markdown("Upload your PDF or image file. The system will mask sensitive IDs using LLM logic.")
 
-BACKEND_URL = "http://localhost:8000"
+BACKEND_URL = "https://image-redunct.onrender.com"
 
 uploaded_file = st.file_uploader("Choose a PDF or Image", type=["pdf", "jpg", "jpeg", "png"])
 

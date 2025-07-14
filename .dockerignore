@@ -1,7 +1,13 @@
 __pycache__/
+venv/
 *.pyc
-.env
-.DS_Store
+*.pyo
+*.pyd
 *.log
-.vscode/
-.git/
+uploads/
+output/
+.DS_Store
+.env
+*.jpg
+*.png
+*.pdf

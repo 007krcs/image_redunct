@@ -1,32 +1,18 @@
-FROM python:3.11-slim
+FROM python:3.10-slim
 
-# Set environment variable to avoid interactive tzdata setup
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Set working directory
 WORKDIR /app
 
-# Install system-level dependencies required for Python packages
+COPY requirements.txt .
+
 RUN apt-get update && apt-get install -y \
-    gcc \
-    build-essential \
-    libgl1 \
-    libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
+    tesseract-ocr \
+    libgl1-mesa-glx \
+    poppler-utils \
+    fonts-dejavu-core \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy files
-COPY . .
+RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-# Upgrade pip and install Python dependencies
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-
-# Expose ports
-EXPOSE 8000
-EXPOSE 10000
-
-# Make sure start.sh is executable
-RUN chmod +x ./start.sh
-
-# Start both backend and frontend
+COPY start.sh .
+RUN chmod +x start.sh
 CMD ["./start.sh"]
