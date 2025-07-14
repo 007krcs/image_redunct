@@ -13,7 +13,8 @@ st.title("🔒 ID Masking Document Redactor")
 st.markdown("Upload your PDF or image file. The system will mask sensitive IDs using Gemini AI.")
 
 # Use deployed backend URL
-BACKEND_URL = "https://image-redunct.onrender.com"
+
+BACKEND_URL = "http://localhost:8000"
 
 uploaded_file = st.file_uploader("Choose a PDF or Image", type=["pdf", "jpg", "jpeg", "png"])
 
