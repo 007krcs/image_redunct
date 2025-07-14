@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: image-redaction-service
+    env: docker
+    plan: free
+    buildCommand: ""
+    startCommand: ./start.sh
+    envVars:
+      - key: GEMINI_API_KEY
+        value: your-secret-here
+    ports:
+      - port: 10000  # expose only Streamlit UI
