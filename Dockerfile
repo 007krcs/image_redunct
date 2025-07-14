@@ -1,6 +1,6 @@
-FROM python:3.13-slim
+FROM python:3.11-slim
 
-# Install system dependencies required for OCR, PDF, and SciPy
+# Install system dependencies for OCR, PDF, and SciPy
 RUN apt-get update && apt-get install -y \
     gfortran \
     build-essential \
@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy all files to the container
+# Copy project files
 COPY . .
 
 # Install Python dependencies
@@ -27,5 +27,5 @@ RUN pip install -r requirements.txt
 EXPOSE 8000
 EXPOSE 10000
 
-# Start both FastAPI and Streamlit
+# Start both FastAPI and Streamlit servers
 CMD ["bash", "-c", "uvicorn api_app:app --host 0.0.0.0 --port 8000 & streamlit run streamlit_ui.py --server.port 10000 --server.address 0.0.0.0"]
